@@ -55,14 +55,14 @@ services:
     networks:
       - ckannet
       - dbnet
+      - webnet  # Se necessário para comunicação externa
     image: ckan/ckan-base-datapusher:${DATAPUSHER_VERSION}
     restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "wget", "-qO", "/dev/null", "http://localhost:8800"]
-      interval: 60s
-      timeout: 10s
-      retries: 3
-
+    env_file:
+      - .env
+    depends_on:
+      - ckan
+      - db
   db:
     build:
       context: postgresql/
